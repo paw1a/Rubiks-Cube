@@ -1,9 +1,10 @@
+import com.sun.deploy.util.BlackList;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class CubePanel extends JPanel implements Runnable, KeyListener {
 
@@ -41,7 +42,7 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
         g = (Graphics2D) image.getGraphics();
 
         cube = new CubeModel();
-        cube.makeMove("R'");
+        cube.makeAlgorithm("F R U' R' U' R U R' F' R U R' U' R' F R F'");
     }
 
 
@@ -66,7 +67,8 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
             if(i == 4) {
                 layer = cube.layerRotate(layer, true, null, null);
                 layer = cube.layerRotate(layer, true, null, null);
-            }
+            } else if(i == 1) layer = cube.layerRotate(layer, true, null, null);
+              else if(i == 3) layer = cube.layerRotate(layer, false, null, null);
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {
                     g.setColor(getRGBColor(layer[j][k].getColorByDir(c[i])));

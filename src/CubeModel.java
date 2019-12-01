@@ -143,18 +143,47 @@ public class CubeModel {
         return newLayer;
     }
 
+    public void makeAlgorithm(String s) {
+        String [] moves = s.split(" ");
+        for (int i = 0; i < moves.length; i++) {
+            makeMove(moves[i]);
+        }
+    }
+
     public void makeMove(String move) {
         Cube [][] layer;
-        if(move.equals("R") || move == "R'") {
+        if(move.contains("R")) {
             layer = getLayer('R');
             if(move.equals("R")) {
                 layer = layerRotate(layer, true, new char[]{'U', 'B', 'D', 'F'}, new char[]{'B', 'D', 'F', 'U'});
             } else {
-                 layer = layerRotate(layer, false, new char[]{'U', 'F', 'D', 'B'}, new char[]{'F', 'D', 'B', 'U'});
+                layer = layerRotate(layer, false, new char[]{'U', 'F', 'D', 'B'}, new char[]{'F', 'D', 'B', 'U'});
             }
             setLayer(layer, 'R');
-        } else if(move == "L" || move == "L'") {
-
+        } else if(move.contains("L")) {
+            layer = getLayer('L');
+            if(move.equals("L")) {
+                layer = layerRotate(layer, true, new char[]{'U', 'F', 'D', 'B'}, new char[]{'F', 'D', 'B', 'U'});
+            } else {
+                layer = layerRotate(layer, false, new char[]{'U', 'F', 'D', 'B'}, new char[]{'B', 'U', 'F', 'D'});
+            }
+            setLayer(layer, 'L');
+        } else if(move.equals("U") || move.equals("U'")) {
+            layer = getLayer('U');
+            if(move.equals("U")) {
+                layer = layerRotate(layer, true, new char[]{'R', 'F', 'L', 'B'}, new char[]{'F', 'L', 'B', 'R'});
+            } else {
+                layer = layerRotate(layer, false, new char[]{'R', 'F', 'L', 'B'}, new char[]{'B', 'R', 'F', 'L'});
+            }
+            setLayer(layer, 'U');
+        } else if(move.equals("F") || move.equals("F'")) {
+            layer = getLayer('F');
+            if(move.equals("F")) {
+                layer = layerRotate(layer, true, new char[]{'U', 'R', 'D', 'L'}, new char[]{'R', 'D', 'L', 'U'});
+            } else {
+                layer = layerRotate(layer, false, new char[]{'U', 'L', 'D', 'R'}, new char[]{'L', 'D', 'R', 'U'});
+            }
+            setLayer(layer, 'F');
         }
     }
 
