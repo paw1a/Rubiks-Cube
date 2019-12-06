@@ -1,4 +1,5 @@
 import com.sun.deploy.util.BlackList;
+import javafx.scene.input.KeyCode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +43,9 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
         g = (Graphics2D) image.getGraphics();
 
         cube = new CubeModel();
-        cube.makeAlgorithm("F R U' R' U' R U R' F' R U R' U' R' F R F'");
+        String scramble = Tools.makeRandomScramble();
+        System.out.println(scramble);
+        cube.makeAlgorithm(scramble);
     }
 
 
@@ -136,12 +139,16 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+            System.out.println(cube.solveWhiteCross());
+        }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+            System.out.println(cube.solveWhiteCross());
+        }
     }
 
     @Override

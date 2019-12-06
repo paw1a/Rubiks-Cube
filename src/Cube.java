@@ -39,6 +39,31 @@ public class Cube {
         return isEdge;
     }
 
+    public boolean isWhite() {
+        for (int i = 0; i < colors.length; i++) {
+            if(colors[i].getColor() == 'W') return true;
+        }
+        return false;
+    }
+
+    public CColor getNotWhiteColor() {
+        if(isWhite() && isEdge) {
+            if(colors[0].getColor() == 'W') return colors[1];
+            else return colors[0];
+        }
+        System.out.println("Это не белое ребро");
+        return null;
+    }
+
+    public CColor getWhiteColor() {
+        if(isEdge && isWhite()) {
+            if(colors[0].getColor() == 'W') return colors[0];
+            else return colors[1];
+        }
+        System.out.println("Это не белое ребро");
+        return null;
+    }
+
     public boolean isCorner() {
         return isCorner;
     }
@@ -46,6 +71,18 @@ public class Cube {
     public boolean isCenter() {
         if(!isEdge && !isCorner) return true;
         else return false;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getZ() {
+        return z;
     }
 
     public CColor[] getColors() {

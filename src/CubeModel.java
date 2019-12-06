@@ -1,6 +1,7 @@
 public class CubeModel {
 
     public Cube [][][] cubes = new Cube[3][3][3];
+    public String whiteCross = "";
 
     public CubeModel() {
         init();
@@ -150,8 +151,133 @@ public class CubeModel {
         }
     }
 
-    public void makeMove(String move) {
+    public String solveWhiteCross() {
+        Cube[][] layer;
+
+        if(!isWhiteCrossDone()) {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if(cubes[i][j][1].isEdge() && cubes[i][j][1].isWhite()) {
+                        Cube edge = cubes[i][j][1];
+                        if(i == 0 && j == 0) {
+                            if(edge.getWhiteColor().getDirection() == 'F') whiteCross += makeEdgeEmpty('L') + makeMove("L'");
+                            else whiteCross += makeEdgeEmpty('F') + makeMove("F");
+                        } else if(i==0 && j==2) {
+                            if(edge.getWhiteColor().getDirection() == 'B') whiteCross += makeEdgeEmpty('L') + makeMove("L");
+                            else whiteCross += makeEdgeEmpty('B') + makeMove("B'");
+                        } else if(i==2 && j==2) {
+                            if(edge.getWhiteColor().getDirection() == 'B') whiteCross += makeEdgeEmpty('R') + makeMove("R'");
+                            else whiteCross += makeEdgeEmpty('B') + makeMove("B");
+                        } else {
+                            if(edge.getWhiteColor().getDirection() == 'F') whiteCross += makeEdgeEmpty('R') + makeMove("R");
+                            else whiteCross += makeEdgeEmpty('F') + makeMove("F'");
+                        }
+                    }
+                }
+            }
+        }
+
+        if(!isWhiteCrossDone()) {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if(cubes[i][j][2].isEdge() && cubes[i][j][2].isWhite()) {
+                        if(cubes[i][j][2].getWhiteColor().getDirection() == 'D') {
+                            whiteCross += makeEdgeEmpty(cubes[i][j][2].getNotWhiteColor().getDirection())
+                                    + makeMove(String.valueOf(cubes[i][j][2].getNotWhiteColor().getDirection()));
+                        }
+                    }
+                }
+            }
+        }
+
+        if(!isWhiteCrossDone()) {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    for (int k = 0; k < 3; k+=2) {
+                        Cube cube = cubes[i][j][k];
+                        if(cube.isEdge() && cube.isWhite()
+                                && cube.getWhiteColor().getDirection() != 'U'
+                                && cube.getWhiteColor().getDirection() != 'D') {
+                            if(k == 0) {
+                                whiteCross += makeMove(cube.getWhiteColor().getDirection()+"");
+                                whiteCross += makeMove("U'");
+                                whiteCross += makeMove(cube.getNotWhiteColor().getDirection()+"");
+                            } else {
+                                whiteCross += makeEdgeEmpty(cube.getNotWhiteColor().getDirection())
+                                        + makeMove(cube.getWhiteColor().getDirection()+"'");
+                                whiteCross += makeMove("U'");
+                                whiteCross += makeMove(cube.getNotWhiteColor().getDirection()+"");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if(!isWhiteCrossDone()) solveWhiteCross();
+        else {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (cubes[i][j][0].isEdge()) {
+                        while(true) {
+                            if (cubes[i][j][0].isWhite()) {
+                                if(cubes[i][j][0].getNotWhiteColor().getColor() == cubes[i][j][1].getColors()[0].getColor()) {
+                                    whiteCross += makeMove(cubes[i][j][0].getNotWhiteColor().getDirection() + "2");
+                                    break;
+                                } else {
+                                    whiteCross += makeMove("U");
+                                }
+                            } else {
+                                whiteCross += makeMove("U");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return whiteCross;
+    }
+
+    public String makeEdgeEmpty(char c) {
+        int x = 0, y = 0;
+        switch (c) {
+            case 'R': x = 2; y = 1; break;
+            case 'B': x = 1; y = 2; break;
+            case 'L': x = 0; y = 1; break;
+            case 'F': x = 1; y = 0; break;
+        }
+        int times = 0;
+        while(true) {
+            if(cubes[x][y][0].isEdge() && cubes[x][y][0].isWhite() && cubes[x][y][0].getWhiteColor().getDirection() == 'U') {
+                makeMove("U");
+                times++;
+            }
+            else break;
+        }
+        if(times == 3) return "U' ";
+        else if(times == 2) return "U2 ";
+        else if(times == 1) return "U ";
+        else return "";
+    }
+
+    public boolean isWhiteCrossDone() {
+        int count = 0;
+        Cube[][] layer = getLayer('U');
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if(layer[i][j].isEdge() && layer[i][j].getColorByDir('U') == 'W') count++;
+            }
+        }
+        return count == 4;
+    }
+
+    public String makeMove(String move) {
         Cube [][] layer;
+        if(move.contains("2")) {
+            makeMove(String.valueOf(move.charAt(0)));
+            makeMove(String.valueOf(move.charAt(0)));
+            return move + " ";
+        }
         if(move.contains("R")) {
             layer = getLayer('R');
             if(move.equals("R")) {
@@ -184,7 +310,24 @@ public class CubeModel {
                 layer = layerRotate(layer, false, new char[]{'U', 'L', 'D', 'R'}, new char[]{'L', 'D', 'R', 'U'});
             }
             setLayer(layer, 'F');
+        } else if(move.equals("D") || move.equals("D'")) {
+            layer = getLayer('D');
+            if(move.equals("D")) {
+                layer = layerRotate(layer, true, new char[]{'F', 'R', 'B', 'L'}, new char[]{'R', 'B', 'L', 'F'});
+            } else {
+                layer = layerRotate(layer, false, new char[]{'F', 'L', 'B', 'R'}, new char[]{'L', 'B', 'R', 'F'});
+            }
+            setLayer(layer, 'D');
+        } else if(move.equals("B") || move.equals("B'")) {
+            layer = getLayer('B');
+            if(move.equals("B")) {
+                layer = layerRotate(layer, true, new char[]{'U', 'L', 'D', 'R'}, new char[]{'L', 'D', 'R', 'U'});
+            } else {
+                layer = layerRotate(layer, false, new char[]{'U', 'R', 'D', 'L'}, new char[]{'R', 'D', 'L', 'U'});
+            }
+            setLayer(layer, 'B');
         }
+        return move + " ";
     }
 
 
