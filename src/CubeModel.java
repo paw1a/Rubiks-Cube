@@ -52,6 +52,27 @@ public class CubeModel {
                     }
                 }
                 break;
+            case 'E':
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        layer[i][j] = cubes[j][2-i][1];
+                    }
+                }
+                break;
+            case 'S':
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        layer[i][j] = cubes[j][1][i];
+                    }
+                }
+                break;
+            case 'M':
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        layer[i][j] = cubes[1][j][i];
+                    }
+                }
+                break;
         }
         return layer;
     }
@@ -97,6 +118,27 @@ public class CubeModel {
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
                         cubes[2-j][2][i] = layer[i][j];
+                    }
+                }
+                break;
+            case 'E':
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        cubes[j][2-i][1] = layer[i][j];
+                    }
+                }
+                break;
+            case 'M':
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        cubes[1][j][i] = layer[i][j];
+                    }
+                }
+                break;
+            case 'S':
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        cubes[j][1][i] = layer[i][j];
                     }
                 }
                 break;
@@ -149,6 +191,22 @@ public class CubeModel {
         for (int i = 0; i < moves.length; i++) {
             makeMove(moves[i]);
         }
+    }
+
+    public String solveWhiteCorners() {
+        String moves = "";
+
+        for (int i = 0; i < 3; i+=2) {
+            for (int j = 0; j < 3; j+=2) {
+                if(cubes[i][j][0].isWhite()) {
+
+                } else {
+
+                }
+            }
+        }
+
+        return moves;
     }
 
     public String solveWhiteCross() {
@@ -326,6 +384,39 @@ public class CubeModel {
                 layer = layerRotate(layer, false, new char[]{'U', 'R', 'D', 'L'}, new char[]{'R', 'D', 'L', 'U'});
             }
             setLayer(layer, 'B');
+        } else if(move.equals("E") || move.equals("E'")) {
+            layer = getLayer('E');
+            if(move.equals("E")) {
+                layer = layerRotate(layer, true, new char[]{'R', 'F', 'L', 'B'}, new char[]{'F', 'L', 'B', 'R'});
+            } else {
+                layer = layerRotate(layer, false, new char[]{'R', 'F', 'L', 'B'}, new char[]{'B', 'R', 'F', 'L'});
+            }
+            setLayer(layer, 'E');
+        } else if(move.equals("M") || move.equals("M'")) {
+            layer = getLayer('M');
+            if(move.equals("M")) {
+                layer = layerRotate(layer, true, new char[]{'U', 'B', 'D', 'F'}, new char[]{'B', 'D', 'F', 'U'});
+            } else {
+                layer = layerRotate(layer, false, new char[]{'U', 'F', 'D', 'B'}, new char[]{'F', 'D', 'B', 'U'});
+            }
+            setLayer(layer, 'M');
+        } else if(move.equals("S") || move.equals("S'")) {
+            layer = getLayer('S');
+            if(move.equals("S")) {
+                layer = layerRotate(layer, true, new char[]{'U', 'R', 'D', 'L'}, new char[]{'R', 'D', 'L', 'U'});
+            } else {
+                layer = layerRotate(layer, false, new char[]{'U', 'L', 'D', 'R'}, new char[]{'L', 'D', 'R', 'U'});
+            }
+            setLayer(layer, 'S');
+        } else if(move.contains("y")) {
+            if(move.equals("y")) makeAlgorithm("U E D'");
+            else makeAlgorithm("U' E' D");
+        } else if(move.contains("x")) {
+            if(move.equals("x")) makeAlgorithm("R M L'");
+            else makeAlgorithm("R' M' L");
+        } else if(move.contains("z")) {
+            if(move.equals("z")) makeAlgorithm("F S B'");
+            else makeAlgorithm("F' S' B");
         }
         return move + " ";
     }

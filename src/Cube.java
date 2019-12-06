@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Cube {
 
     private int x, y, z;
@@ -53,6 +55,17 @@ public class Cube {
         }
         System.out.println("Это не белое ребро");
         return null;
+    }
+
+    public ArrayList<CColor> getNotWhiteColors() {
+        ArrayList<CColor> col = new ArrayList<>();
+        if(isWhite() && isCorner) {
+            for (int i = 0; i < 3; i++) {
+                if(colors[i].getColor() != 'W') col.add(colors[i]);
+            }
+        }
+        System.out.println("Это не белое ребро");
+        return col;
     }
 
     public CColor getWhiteColor() {

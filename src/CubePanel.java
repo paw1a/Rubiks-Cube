@@ -45,7 +45,7 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
         cube = new CubeModel();
         String scramble = Tools.makeRandomScramble();
         System.out.println(scramble);
-        cube.makeAlgorithm(scramble);
+        //cube.makeAlgorithm(scramble);
     }
 
 
@@ -147,7 +147,7 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-            System.out.println(cube.solveWhiteCross());
+
         }
     }
 

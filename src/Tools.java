@@ -1,4 +1,8 @@
 public class Tools {
+    private Cube [][][] cubes;
+    public Tools(Cube [][][] cubes) {
+        this.cubes = cubes;
+    }
 
     public static String makeRandomScramble() {
         String scr = "";
@@ -16,5 +20,6 @@ public class Tools {
         }
         return scr;
     }
+
 
 }
