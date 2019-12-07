@@ -48,6 +48,13 @@ public class Cube {
         return false;
     }
 
+    public boolean isYellow() {
+        for (int i = 0; i < colors.length; i++) {
+            if(colors[i].getColor() == 'Y') return true;
+        }
+        return false;
+    }
+
     public CColor getNotWhiteColor() {
         if(isWhite() && isEdge) {
             if(colors[0].getColor() == 'W') return colors[1];
@@ -64,16 +71,14 @@ public class Cube {
                 if(colors[i].getColor() != 'W') col.add(colors[i]);
             }
         }
-        System.out.println("Это не белое ребро");
         return col;
     }
 
     public CColor getWhiteColor() {
-        if(isEdge && isWhite()) {
-            if(colors[0].getColor() == 'W') return colors[0];
-            else return colors[1];
+        for (int i = 0; i < colors.length; i++) {
+            if(colors[i].getColor() == 'W') return colors[i];
         }
-        System.out.println("Это не белое ребро");
+        System.out.println("Это не белое ребро/угол");
         return null;
     }
 
