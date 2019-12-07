@@ -139,7 +139,7 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 1; i++) {
                 cube = new CubeModel();
                 System.out.println(cube.makeAlgorithm(Tools.makeRandomScramble()));
                 System.out.println(cube.solveWhiteCross());
@@ -147,6 +147,7 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
                 System.out.println(cube.solveWhiteCorners());
                 System.out.println(cube.solveF2L());
                 System.out.println(cube.checkF2L());
+                System.out.println(cube.solveYellowCross());
                 System.out.println();
             }
         }

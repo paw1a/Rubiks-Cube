@@ -197,6 +197,30 @@ public class CubeModel {
         return s + " ";
     }
 
+    public String solveYellowCross() {
+        String moves = "";
+
+        if(cubes[1][0][0].getColorByDir('U') == 'Y' && cubes[2][1][0].getColorByDir('U') == 'Y'
+            && cubes[1][2][0].getColorByDir('U') == 'Y' && cubes[0][1][0].getColorByDir('U') == 'Y')
+            return moves;
+
+        for (int i = 0; i < 2; i++) {
+            if(cubes[0][1][0].getColorByDir('U') == 'Y' && cubes[2][1][0].getColorByDir('U') == 'Y') {
+                moves += makeAlgorithm("F R U R' U' F'");
+                return moves;
+            } else moves += makeMove("U");
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if(cubes[1][2][0].getColorByDir('U') == 'Y' && cubes[0][1][0].getColorByDir('U') == 'Y') {
+                moves += makeAlgorithm("F R U R' U' R U R' U' F'");
+                return moves;
+            } else moves += makeMove("U");
+        }
+        moves += makeAlgorithm("F R U R' U' F' U2 F R U R' U' R U R' U' F'");
+        return moves;
+    }
+
     public String solveF2L() {
         String moves = "";
 
