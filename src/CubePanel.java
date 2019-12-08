@@ -129,7 +129,7 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
             case 'Y': return Color.YELLOW;
             case 'W': return Color.WHITE;
             case 'R': return Color.RED;
-            case 'O': return Color.ORANGE;
+            case 'O': return Color.ORANGE.darker();
             case 'G': return Color.GREEN;
             case 'B': return Color.BLUE;
         }
@@ -146,9 +146,12 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
                 System.out.println(cube.prepareWhiteCorners());
                 System.out.println(cube.solveWhiteCorners());
                 System.out.println(cube.solveF2L());
-                System.out.println(cube.checkF2L());
                 System.out.println(cube.solveYellowCross());
+                System.out.println(cube.solveOLL());
+                System.out.println(cube.solvePLLCorners());
+                System.out.println("PLL " + cube.solvePLLEdges());
                 System.out.println();
+                if(!cube.isCubeDone()) throw new RuntimeException();
             }
         }
     }

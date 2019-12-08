@@ -1,8 +1,6 @@
-
 public class CubeModel {
 
     public Cube [][][] cubes = new Cube[3][3][3];
-    public String whiteCross = "";
     private Tools tools;
 
     public CubeModel() {
@@ -197,6 +195,135 @@ public class CubeModel {
         return s + " ";
     }
 
+    public boolean isYellowU(int x, int y) {
+        if(cubes[x][y][0].getColorByDir('U') == 'Y') return true;
+        return false;
+    }
+
+    public boolean isUCornersDone() {
+        for (int i = 0; i < 4; i++) {
+            if(cubes[0][0][0].getColorByDir('F') != cubes[2][0][0].getColorByDir('F')) return false;
+            makeMove("U");
+        }
+        return true;
+    }
+
+    public boolean isCubeDone() {
+        boolean b = false;
+        for (int i = 0; i < 4; i++) {
+            if(cubes[1][0][1].getColorByDir('F') != 'G') makeMove("y");
+        }
+        char [] dirs = new char[]{'F', 'R', 'B', 'L', 'U', 'D'};
+        char [] colors = new char[]{'G', 'O', 'B', 'R', 'Y', 'W'};
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    for (int l = 0; l < cubes[i][j][k].getColors().length; l++) {
+                        CColor color = cubes[i][j][k].getColors()[l];
+                        switch (color.getDirection()) {
+                            case 'F': if(color.getColor() != 'G') b = true; break;
+                            case 'R': if(color.getColor() != 'O') b = true; break;
+                            case 'B': if(color.getColor() != 'B') b = true; break;
+                            case 'L': if(color.getColor() != 'R') b = true; break;
+                            case 'U': if(color.getColor() != 'Y') b = true; break;
+                            case 'D': if(color.getColor() != 'W') b = true; break;
+                        }
+                    }
+                }
+            }
+        }
+        return !b;
+    }
+
+    public String solvePLLEdges() {
+        String moves = "";
+
+        if(isCubeDone()) return moves;
+
+        for (int i = 0; i < 4; i++) {
+            if(cubes[0][0][0].getColorByDir('F') == cubes[1][0][0].getColorByDir('F')
+                    && cubes[1][0][0].getColorByDir('F') == cubes[1][0][1].getColorByDir('F')) {
+                if(cubes[2][1][0].getColorByDir('R') == cubes[0][1][1].getColorByDir('L'))
+                    return moves + makeAlgorithm("R' U R' U' R' U' R' U R U R2");
+                else return moves + makeAlgorithm("R2 U' R' U' R U R U R U' R");
+            } else moves += makeMove("y");
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if(cubes[1][0][0].getColorByDir('F') == cubes[1][2][1].getColorByDir('B')
+                    && cubes[1][2][0].getColorByDir('B') == cubes[1][0][1].getColorByDir('F'))
+                return moves + makeAlgorithm("L R U2 L' R' F' B' U2 F B");
+        }
+
+        if(cubes[1][0][0].getColorByDir('F') == cubes[0][1][1].getColorByDir('L'))
+            return moves + makeAlgorithm("R' U' R U' R U R U' R' U R U R2 U' R' U2");
+        else return moves + makeAlgorithm("y R' U' R U' R U R U' R' U R U R2 U' R' U2");
+    }
+
+    public String solvePLLCorners() {
+        String moves = "";
+
+        if(!isUCornersDone()) {
+            boolean b = false;
+            for (int i = 0; i < 4; i++) {
+                if (cubes[2][0][0].getColorByDir('R') == cubes[2][2][0].getColorByDir('R')) {
+                    moves += makeAlgorithm("R2 B2 R F R' B2 R F' R");
+                    b = true;
+                    break;
+                }
+                moves += makeMove("U");
+            }
+            if (!b) moves += makeAlgorithm("F R U' R' U' R U R' F' R U R' U' R' F R F'");
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if(cubes[0][0][0].getColorByDir('F') != cubes[0][0][1].getColorByDir('F'))
+                moves += makeMove("U");
+            else break;
+        }
+
+        return moves;
+    }
+
+    public String solveOLL() {
+        String alg = "", moves = "";
+        boolean b = false;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if(cubes[i][j][0].getColorByDir('U') != 'Y') b = true;
+            }
+        }
+        if(b) {
+            for (int i = 0; i < 4; i++) {
+                if (isYellowU(0, 0) && isYellowU(2, 0)
+                        && cubes[0][2][0].getDirByColor('Y') == 'B' && cubes[2][2][0].getDirByColor('Y') == 'B')
+                {alg = "R2 D' R U2 R' D R U2 R"; break;}
+                else if (isYellowU(0, 0) && isYellowU(2, 0)
+                        && cubes[0][2][0].getDirByColor('Y') == 'L' && cubes[2][2][0].getDirByColor('Y') == 'R')
+                {alg = "R' F' R U R' U' R' F R U R"; break;}
+                else if (isYellowU(0, 2) && isYellowU(2, 0)
+                        && cubes[0][0][0].getDirByColor('Y') == 'L' && cubes[2][2][0].getDirByColor('Y') == 'B')
+                {alg = "R2 D' R U' R' D R U R"; break;}
+                else if (isYellowU(2, 2) && cubes[2][0][0].getDirByColor('Y') == 'R'
+                        && cubes[0][0][0].getDirByColor('Y') == 'F')
+                {alg = "R U2 R' U' R U' R'"; break; }
+                else if (isYellowU(0, 0) && cubes[2][0][0].getDirByColor('Y') == 'F'
+                        && cubes[2][2][0].getDirByColor('Y') == 'R')
+                {alg = "R U R' U R U2 R'"; break; }
+                else if (cubes[0][0][0].getDirByColor('Y') == 'L' && cubes[0][2][0].getDirByColor('Y') == 'L'
+                        && !isYellowU(2, 0) && !isYellowU(2, 2)) {
+                    if (cubes[2][0][0].getDirByColor('Y') == 'R' && cubes[2][2][0].getDirByColor('Y') == 'R')
+                    {alg = "R U R' U R U' R' U R U2 R'"; break; }
+                    else {alg = "R U2 R2 U' R2 U' R2 U2 R"; break; }
+                }
+                moves += makeMove("U");
+            }
+        }
+        moves += makeAlgorithm(alg);
+
+        return moves;
+    }
+
     public String solveYellowCross() {
         String moves = "";
 
@@ -327,6 +454,7 @@ public class CubeModel {
     }
 
     public String solveWhiteCross() {
+        String whiteCross = "";
         Cube[][] layer;
 
         if(!isWhiteCrossDone()) {
@@ -425,6 +553,11 @@ public class CubeModel {
     }
 
     public String makeMove(String move) {
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Cube [][] layer;
         if(move.contains("2")) {
             makeMove(String.valueOf(move.charAt(0)));
@@ -515,7 +648,6 @@ public class CubeModel {
         }
         return move + " ";
     }
-
 
     private void init() {
         cubes[0][0][0] = new Cube(0,0,0,
