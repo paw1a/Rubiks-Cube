@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.tools.Tool;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -16,6 +17,7 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
     private int targetTime = 1000 / FPS;
 
     private CubeModel cube;
+    private AlgorithmController controller;
 
     public CubePanel() {
         super();
@@ -33,18 +35,69 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
         addKeyListener(this);
     }
 
-    private void init() {
+    private void init() throws InterruptedException {
         running = true;
 
         image = new BufferedImage(1080, 720, BufferedImage.TYPE_INT_RGB);
         g = (Graphics2D) image.getGraphics();
 
         cube = new CubeModel();
+        controller = new AlgorithmController();
+    }
+
+    public void makeSolve() throws InterruptedException {
+        cube = new CubeModel();
+
         String scramble = Tools.makeRandomScramble();
-        System.out.println(scramble);
         cube.makeAlgorithm(scramble);
 
+        System.out.println("Scramble " + scramble);
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
 
+        String[] solve = solveCube();
+        for (int j = 0; j < 8; j++) {
+            System.out.println(solve[j]);
+        }
+        System.out.println("////////////////////////////");
+
+        /*try {
+            Thread.sleep(4000);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        cube = new CubeModel();
+        
+        cube.makeAlgorithm(scramble);
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        for (int j = 0; j < 2; j++) {
+            cube.makeAlgorithm(solve[j]);
+        }*/
+    }
+
+    public String[] solveCube() {
+        String[] s = new String[8];
+
+        s[0] = cube.solveWhiteCross();
+        s[1] = cube.prepareWhiteCorners();
+        s[2] = cube.solveWhiteCorners();
+        s[3] = cube.solveF2L();
+        s[4] = cube.solveYellowCross();
+        s[5] = cube.solveOLL();
+        s[6] = cube.solvePLLCorners();
+        s[7] = cube.solvePLLEdges();
+
+        return s;
     }
 
 
@@ -55,9 +108,9 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
     public void draw() {
         int offset = 3, size = 50;
         char[] c = new char[] {'B', 'L', 'U', 'R', 'D', 'F'};
-        Cube[][] layer = cube.getLayer(c[0]);
-        layer = cube.layerRotate(layer, true, null, null);
-        layer = cube.layerRotate(layer, true, null, null);
+        Cube[][] layer = cube.tools.getLayer(c[0]);
+        layer = cube.tools.layerRotate(layer, true, null, null);
+        layer = cube.tools.layerRotate(layer, true, null, null);
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 g.setColor(getRGBColor(layer[i][j].getColorByDir(c[0])));
@@ -65,12 +118,12 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
             }
         }
         for (int i = 1; i < 5; i++) {
-            layer = cube.getLayer(c[i]);
+            layer = cube.tools.getLayer(c[i]);
             if(i == 4) {
-                layer = cube.layerRotate(layer, true, null, null);
-                layer = cube.layerRotate(layer, true, null, null);
-            } else if(i == 1) layer = cube.layerRotate(layer, true, null, null);
-              else if(i == 3) layer = cube.layerRotate(layer, false, null, null);
+                layer = cube.tools.layerRotate(layer, true, null, null);
+                layer = cube.tools.layerRotate(layer, true, null, null);
+            } else if(i == 1) layer = cube.tools.layerRotate(layer, true, null, null);
+              else if(i == 3) layer = cube.tools.layerRotate(layer, false, null, null);
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {
                     g.setColor(getRGBColor(layer[j][k].getColorByDir(c[i])));
@@ -78,15 +131,13 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
                 }
             }
         }
-        layer = cube.getLayer(c[5]);
+        layer = cube.tools.getLayer(c[5]);
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 g.setColor(getRGBColor(layer[i][j].getColorByDir(c[5])));
                 g.fillRect(size*3 + offset*3 + 50 + j*size + j*offset, i*size+i*offset + 50 + size*6 + 6*offset, size, size);
             }
         }
-
-
     }
 
     public void drawToScreen() {
@@ -97,7 +148,11 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
 
     @Override
     public void run() {
-        init();
+        try {
+            init();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         long startTime;
         long urdTime;
@@ -126,12 +181,12 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
 
     public Color getRGBColor(char color) {
         switch (color) {
-            case 'Y': return Color.YELLOW;
+            case 'Y': return Color.decode("#fff800");
             case 'W': return Color.WHITE;
-            case 'R': return Color.RED;
-            case 'O': return Color.ORANGE.darker();
-            case 'G': return Color.GREEN;
-            case 'B': return Color.BLUE;
+            case 'R': return Color.decode("#fc010d");
+            case 'O': return Color.decode("#f27c08");
+            case 'G': return Color.decode("#45f708");
+            case 'B': return Color.decode("#0437ff");
         }
         return Color.BLACK;
     }
@@ -139,19 +194,10 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-            for (int i = 0; i < 1; i++) {
-                cube = new CubeModel();
-                System.out.println(cube.makeAlgorithm(Tools.makeRandomScramble()));
-                System.out.println(cube.solveWhiteCross());
-                System.out.println(cube.prepareWhiteCorners());
-                System.out.println(cube.solveWhiteCorners());
-                System.out.println(cube.solveF2L());
-                System.out.println(cube.solveYellowCross());
-                System.out.println(cube.solveOLL());
-                System.out.println(cube.solvePLLCorners());
-                System.out.println("PLL " + cube.solvePLLEdges());
-                System.out.println();
-                if(!cube.isCubeDone()) throw new RuntimeException();
+            try {
+                makeSolve();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
         }
     }

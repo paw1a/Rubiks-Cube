@@ -2,16 +2,12 @@ import java.util.ArrayList;
 
 public class Cube {
 
-    private int x, y, z;
     private CColor[] colors;
 
     private boolean isEdge = false;
     private boolean isCorner = false;
 
-    public Cube(int x, int y, int z, CColor[] colors, char type) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public Cube(CColor[] colors, char type) {
         this.colors = colors;
         switch (type) {
             case 'E': isEdge = true; break;
@@ -84,23 +80,6 @@ public class Cube {
 
     public boolean isCorner() {
         return isCorner;
-    }
-
-    public boolean isCenter() {
-        if(!isEdge && !isCorner) return true;
-        else return false;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getZ() {
-        return z;
     }
 
     public CColor[] getColors() {

@@ -12,10 +12,6 @@ public class CColor {
         this.direction = direction;
     }
 
-    public void setColor(char color) {
-        this.color = color;
-    }
-
     public char getDirection() {
         return direction;
     }

@@ -1,217 +1,35 @@
 public class CubeModel {
 
     public Cube [][][] cubes = new Cube[3][3][3];
-    private Tools tools;
+    public Tools tools;
 
     public CubeModel() {
         init();
         tools = new Tools(this);
     }
-
-    public Cube[][] getLayer(char name) {
-        Cube[][] layer = new Cube[3][3];
-        switch (name) {
-            case 'U':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        layer[i][j] = cubes[j][2-i][0];
-                    }
-                }
-                break;
-            case 'R':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        layer[i][j] = cubes[2][j][i];
-                    }
-                }
-                break;
-            case 'L':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        layer[i][j] = cubes[0][2-j][i];
-                    }
-                }
-                break;
-            case 'F':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        layer[i][j] = cubes[j][0][i];
-                    }
-                }
-                break;
-            case 'D':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        layer[i][j] = cubes[j][i][2];
-                    }
-                }
-                break;
-            case 'B':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        layer[i][j] = cubes[2-j][2][i];
-                    }
-                }
-                break;
-            case 'E':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        layer[i][j] = cubes[j][2-i][1];
-                    }
-                }
-                break;
-            case 'S':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        layer[i][j] = cubes[j][1][i];
-                    }
-                }
-                break;
-            case 'M':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        layer[i][j] = cubes[1][j][i];
-                    }
-                }
-                break;
-        }
-        return layer;
-    }
-
-    public void setLayer(Cube[][] layer, char name) {
-        switch (name) {
-            case 'U':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        cubes[j][2-i][0] = layer[i][j];
-                    }
-                }
-                break;
-            case 'R':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        cubes[2][j][i] = layer[i][j];
-                    }
-                }
-                break;
-            case 'L':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        cubes[0][2-j][i] = layer[i][j];
-                    }
-                }
-                break;
-            case 'F':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        cubes[j][0][i] = layer[i][j];
-                    }
-                }
-                break;
-            case 'D':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        cubes[j][i][2] = layer[i][j];
-                    }
-                }
-                break;
-            case 'B':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        cubes[2-j][2][i] = layer[i][j];
-                    }
-                }
-                break;
-            case 'E':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        cubes[j][2-i][1] = layer[i][j];
-                    }
-                }
-                break;
-            case 'M':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        cubes[1][j][i] = layer[i][j];
-                    }
-                }
-                break;
-            case 'S':
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        cubes[j][1][i] = layer[i][j];
-                    }
-                }
-                break;
-        }
-    }
-
-    public Cube[][] layerRotate(Cube[][] layer, boolean clock, char [] before, char [] after) {
-        Cube[][] newLayer = new Cube[3][3];
-        if(clock) {
-            newLayer[0][0] = layer[2][0];
-            newLayer[0][1] = layer[1][0];
-            newLayer[0][2] = layer[0][0];
-            newLayer[1][0] = layer[2][1];
-            newLayer[1][1] = layer[1][1];
-            newLayer[1][2] = layer[0][1];
-            newLayer[2][0] = layer[2][2];
-            newLayer[2][1] = layer[1][2];
-            newLayer[2][2] = layer[0][2];
-        } else {
-            newLayer[0][0] = layer[0][2];
-            newLayer[0][1] = layer[1][2];
-            newLayer[0][2] = layer[2][2];
-            newLayer[1][0] = layer[0][1];
-            newLayer[1][1] = layer[1][1];
-            newLayer[1][2] = layer[2][1];
-            newLayer[2][0] = layer[0][0];
-            newLayer[2][1] = layer[1][0];
-            newLayer[2][2] = layer[2][0];
-        }
-        if(before != null && after != null) {
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    CColor[] colors = newLayer[i][j].getColors();
-                    for (int k = 0; k < colors.length; k++) {
-                        int temp = -1;
-                        for (int l = 0; l < before.length; l++) {
-                            if (colors[k].getDirection() == before[l]) temp = l;
-                        }
-                        if(temp >= 0) colors[k].setDirection(after[temp]);
-                    }
-                    newLayer[i][j].setColors(colors);
-                }
-            }
-        }
-        return newLayer;
-    }
-
+    
     public String makeAlgorithm(String s) {
         String [] moves = s.split(" ");
         for (int i = 0; i < moves.length; i++) {
-            makeMove(moves[i]);
+            s += makeMove(moves[i]);
         }
-        return s + " ";
-    }
-
-    public boolean isYellowU(int x, int y) {
-        if(cubes[x][y][0].getColorByDir('U') == 'Y') return true;
-        return false;
+        return s;
     }
 
     public boolean isUCornersDone() {
+        boolean b = true;
         for (int i = 0; i < 4; i++) {
-            if(cubes[0][0][0].getColorByDir('F') != cubes[2][0][0].getColorByDir('F')) return false;
+            if(cubes[0][0][0].getColorByDir('F') != cubes[2][0][0].getColorByDir('F')) b = false;
             makeMove("U");
         }
-        return true;
+        return b;
     }
 
     public boolean isCubeDone() {
         boolean b = false;
+        int rotates = 0;
         for (int i = 0; i < 4; i++) {
-            if(cubes[1][0][1].getColorByDir('F') != 'G') makeMove("y");
+            if(cubes[1][0][1].getColorByDir('F') != 'G') { makeMove("y"); rotates++; }
         }
         char [] dirs = new char[]{'F', 'R', 'B', 'L', 'U', 'D'};
         char [] colors = new char[]{'G', 'O', 'B', 'R', 'Y', 'W'};
@@ -232,7 +50,20 @@ public class CubeModel {
                 }
             }
         }
+        for (int i = 0; i < 4 - rotates; i++) makeMove("y");
+
         return !b;
+    }
+
+    public boolean isWhiteCrossDone() {
+        int count = 0;
+        Cube[][] layer = tools.getLayer('U');
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if(layer[i][j].isEdge() && layer[i][j].getColorByDir('U') == 'W') count++;
+            }
+        }
+        return count == 4;
     }
 
     public String solvePLLEdges() {
@@ -295,23 +126,23 @@ public class CubeModel {
         }
         if(b) {
             for (int i = 0; i < 4; i++) {
-                if (isYellowU(0, 0) && isYellowU(2, 0)
+                if (tools.isYellowU(0, 0) && tools.isYellowU(2, 0)
                         && cubes[0][2][0].getDirByColor('Y') == 'B' && cubes[2][2][0].getDirByColor('Y') == 'B')
                 {alg = "R2 D' R U2 R' D R U2 R"; break;}
-                else if (isYellowU(0, 0) && isYellowU(2, 0)
+                else if (tools.isYellowU(0, 0) && tools.isYellowU(2, 0)
                         && cubes[0][2][0].getDirByColor('Y') == 'L' && cubes[2][2][0].getDirByColor('Y') == 'R')
                 {alg = "R' F' R U R' U' R' F R U R"; break;}
-                else if (isYellowU(0, 2) && isYellowU(2, 0)
+                else if (tools.isYellowU(0, 2) && tools.isYellowU(2, 0)
                         && cubes[0][0][0].getDirByColor('Y') == 'L' && cubes[2][2][0].getDirByColor('Y') == 'B')
                 {alg = "R2 D' R U' R' D R U R"; break;}
-                else if (isYellowU(2, 2) && cubes[2][0][0].getDirByColor('Y') == 'R'
+                else if (tools.isYellowU(2, 2) && cubes[2][0][0].getDirByColor('Y') == 'R'
                         && cubes[0][0][0].getDirByColor('Y') == 'F')
                 {alg = "R U2 R' U' R U' R'"; break; }
-                else if (isYellowU(0, 0) && cubes[2][0][0].getDirByColor('Y') == 'F'
+                else if (tools.isYellowU(0, 0) && cubes[2][0][0].getDirByColor('Y') == 'F'
                         && cubes[2][2][0].getDirByColor('Y') == 'R')
                 {alg = "R U R' U R U2 R'"; break; }
                 else if (cubes[0][0][0].getDirByColor('Y') == 'L' && cubes[0][2][0].getDirByColor('Y') == 'L'
-                        && !isYellowU(2, 0) && !isYellowU(2, 2)) {
+                        && !tools.isYellowU(2, 0) && !tools.isYellowU(2, 2)) {
                     if (cubes[2][0][0].getDirByColor('Y') == 'R' && cubes[2][2][0].getDirByColor('Y') == 'R')
                     {alg = "R U R' U R U' R' U R U2 R'"; break; }
                     else {alg = "R U2 R2 U' R2 U' R2 U2 R"; break; }
@@ -379,16 +210,6 @@ public class CubeModel {
         if(restart) moves += solveF2L();
 
         return moves;
-    }
-
-    public boolean checkF2L() {
-        for (int i = 0; i < 4; i++) {
-            Cube cube = cubes[2][0][1];
-            if(cube.getColorByDir('F') != cubes[1][0][1].getColorByDir('F')
-                    || cube.getColorByDir('R') != cubes[2][1][1].getColorByDir('R'))
-                throw new RuntimeException("sfgsdfgsd");
-        }
-        return true;
     }
 
     public String solveWhiteCorners() {
@@ -517,7 +338,7 @@ public class CubeModel {
             }
         }
 
-        if(!isWhiteCrossDone()) solveWhiteCross();
+        if(!isWhiteCrossDone()) whiteCross += solveWhiteCross();
         else {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
@@ -541,20 +362,9 @@ public class CubeModel {
         return whiteCross;
     }
 
-    public boolean isWhiteCrossDone() {
-        int count = 0;
-        Cube[][] layer = getLayer('U');
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if(layer[i][j].isEdge() && layer[i][j].getColorByDir('U') == 'W') count++;
-            }
-        }
-        return count == 4;
-    }
-
     public String makeMove(String move) {
         try {
-            Thread.sleep(200);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -565,77 +375,77 @@ public class CubeModel {
             return move + " ";
         }
         if(move.contains("R")) {
-            layer = getLayer('R');
+            layer = tools.getLayer('R');
             if(move.equals("R")) {
-                layer = layerRotate(layer, true, new char[]{'U', 'B', 'D', 'F'}, new char[]{'B', 'D', 'F', 'U'});
+                layer = tools.layerRotate(layer, true, new char[]{'U', 'B', 'D', 'F'}, new char[]{'B', 'D', 'F', 'U'});
             } else {
-                layer = layerRotate(layer, false, new char[]{'U', 'F', 'D', 'B'}, new char[]{'F', 'D', 'B', 'U'});
+                layer = tools.layerRotate(layer, false, new char[]{'U', 'F', 'D', 'B'}, new char[]{'F', 'D', 'B', 'U'});
             }
-            setLayer(layer, 'R');
+            tools.setLayer(layer, 'R');
         } else if(move.contains("L")) {
-            layer = getLayer('L');
+            layer = tools.getLayer('L');
             if(move.equals("L")) {
-                layer = layerRotate(layer, true, new char[]{'U', 'F', 'D', 'B'}, new char[]{'F', 'D', 'B', 'U'});
+                layer = tools.layerRotate(layer, true, new char[]{'U', 'F', 'D', 'B'}, new char[]{'F', 'D', 'B', 'U'});
             } else {
-                layer = layerRotate(layer, false, new char[]{'U', 'F', 'D', 'B'}, new char[]{'B', 'U', 'F', 'D'});
+                layer = tools.layerRotate(layer, false, new char[]{'U', 'F', 'D', 'B'}, new char[]{'B', 'U', 'F', 'D'});
             }
-            setLayer(layer, 'L');
+            tools.setLayer(layer, 'L');
         } else if(move.equals("U") || move.equals("U'")) {
-            layer = getLayer('U');
+            layer = tools.getLayer('U');
             if(move.equals("U")) {
-                layer = layerRotate(layer, true, new char[]{'R', 'F', 'L', 'B'}, new char[]{'F', 'L', 'B', 'R'});
+                layer = tools.layerRotate(layer, true, new char[]{'R', 'F', 'L', 'B'}, new char[]{'F', 'L', 'B', 'R'});
             } else {
-                layer = layerRotate(layer, false, new char[]{'R', 'F', 'L', 'B'}, new char[]{'B', 'R', 'F', 'L'});
+                layer = tools.layerRotate(layer, false, new char[]{'R', 'F', 'L', 'B'}, new char[]{'B', 'R', 'F', 'L'});
             }
-            setLayer(layer, 'U');
+            tools.setLayer(layer, 'U');
         } else if(move.equals("F") || move.equals("F'")) {
-            layer = getLayer('F');
+            layer = tools.getLayer('F');
             if(move.equals("F")) {
-                layer = layerRotate(layer, true, new char[]{'U', 'R', 'D', 'L'}, new char[]{'R', 'D', 'L', 'U'});
+                layer = tools.layerRotate(layer, true, new char[]{'U', 'R', 'D', 'L'}, new char[]{'R', 'D', 'L', 'U'});
             } else {
-                layer = layerRotate(layer, false, new char[]{'U', 'L', 'D', 'R'}, new char[]{'L', 'D', 'R', 'U'});
+                layer = tools.layerRotate(layer, false, new char[]{'U', 'L', 'D', 'R'}, new char[]{'L', 'D', 'R', 'U'});
             }
-            setLayer(layer, 'F');
+            tools.setLayer(layer, 'F');
         } else if(move.equals("D") || move.equals("D'")) {
-            layer = getLayer('D');
+            layer = tools.getLayer('D');
             if(move.equals("D")) {
-                layer = layerRotate(layer, true, new char[]{'F', 'R', 'B', 'L'}, new char[]{'R', 'B', 'L', 'F'});
+                layer = tools.layerRotate(layer, true, new char[]{'F', 'R', 'B', 'L'}, new char[]{'R', 'B', 'L', 'F'});
             } else {
-                layer = layerRotate(layer, false, new char[]{'F', 'L', 'B', 'R'}, new char[]{'L', 'B', 'R', 'F'});
+                layer = tools.layerRotate(layer, false, new char[]{'F', 'L', 'B', 'R'}, new char[]{'L', 'B', 'R', 'F'});
             }
-            setLayer(layer, 'D');
+            tools.setLayer(layer, 'D');
         } else if(move.equals("B") || move.equals("B'")) {
-            layer = getLayer('B');
+            layer = tools.getLayer('B');
             if(move.equals("B")) {
-                layer = layerRotate(layer, true, new char[]{'U', 'L', 'D', 'R'}, new char[]{'L', 'D', 'R', 'U'});
+                layer = tools.layerRotate(layer, true, new char[]{'U', 'L', 'D', 'R'}, new char[]{'L', 'D', 'R', 'U'});
             } else {
-                layer = layerRotate(layer, false, new char[]{'U', 'R', 'D', 'L'}, new char[]{'R', 'D', 'L', 'U'});
+                layer = tools.layerRotate(layer, false, new char[]{'U', 'R', 'D', 'L'}, new char[]{'R', 'D', 'L', 'U'});
             }
-            setLayer(layer, 'B');
+            tools.setLayer(layer, 'B');
         } else if(move.equals("E") || move.equals("E'")) {
-            layer = getLayer('E');
+            layer = tools.getLayer('E');
             if(move.equals("E")) {
-                layer = layerRotate(layer, true, new char[]{'R', 'F', 'L', 'B'}, new char[]{'F', 'L', 'B', 'R'});
+                layer = tools.layerRotate(layer, true, new char[]{'R', 'F', 'L', 'B'}, new char[]{'F', 'L', 'B', 'R'});
             } else {
-                layer = layerRotate(layer, false, new char[]{'R', 'F', 'L', 'B'}, new char[]{'B', 'R', 'F', 'L'});
+                layer = tools.layerRotate(layer, false, new char[]{'R', 'F', 'L', 'B'}, new char[]{'B', 'R', 'F', 'L'});
             }
-            setLayer(layer, 'E');
+            tools.setLayer(layer, 'E');
         } else if(move.equals("M") || move.equals("M'")) {
-            layer = getLayer('M');
+            layer = tools.getLayer('M');
             if(move.equals("M")) {
-                layer = layerRotate(layer, true, new char[]{'U', 'B', 'D', 'F'}, new char[]{'B', 'D', 'F', 'U'});
+                layer = tools.layerRotate(layer, true, new char[]{'U', 'B', 'D', 'F'}, new char[]{'B', 'D', 'F', 'U'});
             } else {
-                layer = layerRotate(layer, false, new char[]{'U', 'F', 'D', 'B'}, new char[]{'F', 'D', 'B', 'U'});
+                layer = tools.layerRotate(layer, false, new char[]{'U', 'F', 'D', 'B'}, new char[]{'F', 'D', 'B', 'U'});
             }
-            setLayer(layer, 'M');
+            tools.setLayer(layer, 'M');
         } else if(move.equals("S") || move.equals("S'")) {
-            layer = getLayer('S');
+            layer = tools.getLayer('S');
             if(move.equals("S")) {
-                layer = layerRotate(layer, true, new char[]{'U', 'R', 'D', 'L'}, new char[]{'R', 'D', 'L', 'U'});
+                layer = tools.layerRotate(layer, true, new char[]{'U', 'R', 'D', 'L'}, new char[]{'R', 'D', 'L', 'U'});
             } else {
-                layer = layerRotate(layer, false, new char[]{'U', 'L', 'D', 'R'}, new char[]{'L', 'D', 'R', 'U'});
+                layer = tools.layerRotate(layer, false, new char[]{'U', 'L', 'D', 'R'}, new char[]{'L', 'D', 'R', 'U'});
             }
-            setLayer(layer, 'S');
+            tools.setLayer(layer, 'S');
         } else if(move.contains("y")) {
             if(move.equals("y")) makeAlgorithm("U E D'");
             else makeAlgorithm("U' E' D");
@@ -650,60 +460,32 @@ public class CubeModel {
     }
 
     private void init() {
-        cubes[0][0][0] = new Cube(0,0,0,
-                new CColor[]{ new CColor('Y','U') , new CColor('R','L'), new CColor('G','F')}, 'C');
-        cubes[1][0][0] = new Cube(1,0,0,
-                new CColor[]{ new CColor('Y','U') , new CColor('G','F')}, 'E');
-        cubes[2][0][0] = new Cube(2,0,0,
-                new CColor[]{ new CColor('Y','U') , new CColor('G','F'), new CColor('O','R')}, 'C');
-        cubes[0][0][1] = new Cube(0,0,1,
-                new CColor[]{ new CColor('R','L'), new CColor('G','F')}, 'E');
-        cubes[1][0][1] = new Cube(1,0,1,
-                new CColor[]{ new CColor('G','F')}, 'Q');
-        cubes[2][0][1] = new Cube(2,0,1,
-                new CColor[]{ new CColor('G','F'), new CColor('O','R')}, 'E');
-        cubes[0][0][2] = new Cube(0,0,2,
-                new CColor[]{ new CColor('W','D') , new CColor('R','L'), new CColor('G','F')}, 'C');
-        cubes[1][0][2] = new Cube(1,0,2,
-                new CColor[]{ new CColor('W','D') , new CColor('G','F')}, 'E');
-        cubes[2][0][2] = new Cube(2,0,2,
-                new CColor[]{ new CColor('W','D') , new CColor('G','F'), new CColor('O','R')}, 'C');
-        cubes[0][1][0] = new Cube(0,1,0,
-                new CColor[]{ new CColor('R','L'), new CColor('Y','U')}, 'E');
-        cubes[1][1][0] = new Cube(1,1,0,
-                new CColor[]{ new CColor('Y','U')}, 'Q');
-        cubes[2][1][0] = new Cube(2,1,0,
-                new CColor[]{ new CColor('Y','U'), new CColor('O','R')}, 'E');
-        cubes[0][1][1] = new Cube(0,1,1,
-                new CColor[]{ new CColor('R','L')}, 'Q');
-        cubes[1][1][1] = new Cube(1,1,1,
-                new CColor[]{ new CColor('Q','Q')}, 'Q');
-        cubes[2][1][1] = new Cube(2,1,1,
-                new CColor[]{ new CColor('O','R')}, 'Q');
-        cubes[0][1][2] = new Cube(0,1,2,
-                new CColor[]{ new CColor('R','L'), new CColor('W','D')}, 'E');
-        cubes[1][1][2] = new Cube(1,1,2,
-                new CColor[]{ new CColor('W','D')}, 'Q');
-        cubes[2][1][2] = new Cube(2,1,2,
-                new CColor[]{ new CColor('W','D'), new CColor('O','R')}, 'E');
-        cubes[0][2][0] = new Cube(0,2,0,
-                new CColor[]{ new CColor('Y','U') , new CColor('R','L'), new CColor('B','B')}, 'C');
-        cubes[1][2][0] = new Cube(1,2,0,
-                new CColor[]{ new CColor('Y','U') , new CColor('B','B')}, 'E');
-        cubes[2][2][0] = new Cube(2,2,0,
-                new CColor[]{ new CColor('Y','U') , new CColor('B','B'), new CColor('O','R')}, 'C');
-        cubes[0][2][1] = new Cube(0,2,1,
-                new CColor[]{ new CColor('R','L'), new CColor('B','B')}, 'E');
-        cubes[1][2][1] = new Cube(1,2,1,
-                new CColor[]{ new CColor('B','B')}, 'Q');
-        cubes[2][2][1] = new Cube(2,2,1,
-                new CColor[]{ new CColor('B','B'), new CColor('O','R')}, 'E');
-        cubes[0][2][2] = new Cube(0,2,2,
-                new CColor[]{ new CColor('W','D') , new CColor('R','L'), new CColor('B','B')}, 'C');
-        cubes[1][2][2] = new Cube(1,2,2,
-                new CColor[]{ new CColor('W','D') , new CColor('B','B')}, 'E');
-        cubes[2][2][2] = new Cube(2,2,2,
-                new CColor[]{ new CColor('W','D') , new CColor('B','B'), new CColor('O','R')}, 'C');
-
+        cubes[0][0][0] = new Cube(new CColor[]{ new CColor('Y','U') , new CColor('R','L'), new CColor('G','F')}, 'C');
+        cubes[1][0][0] = new Cube(new CColor[]{ new CColor('Y','U') , new CColor('G','F')}, 'E');
+        cubes[2][0][0] = new Cube(new CColor[]{ new CColor('Y','U') , new CColor('G','F'), new CColor('O','R')}, 'C');
+        cubes[0][0][1] = new Cube(new CColor[]{ new CColor('R','L'), new CColor('G','F')}, 'E');
+        cubes[1][0][1] = new Cube(new CColor[]{ new CColor('G','F')}, 'Q');
+        cubes[2][0][1] = new Cube(new CColor[]{ new CColor('G','F'), new CColor('O','R')}, 'E');
+        cubes[0][0][2] = new Cube(new CColor[]{ new CColor('W','D') , new CColor('R','L'), new CColor('G','F')}, 'C');
+        cubes[1][0][2] = new Cube(new CColor[]{ new CColor('W','D') , new CColor('G','F')}, 'E');
+        cubes[2][0][2] = new Cube(new CColor[]{ new CColor('W','D') , new CColor('G','F'), new CColor('O','R')}, 'C');
+        cubes[0][1][0] = new Cube(new CColor[]{ new CColor('R','L'), new CColor('Y','U')}, 'E');
+        cubes[1][1][0] = new Cube(new CColor[]{ new CColor('Y','U')}, 'Q');
+        cubes[2][1][0] = new Cube(new CColor[]{ new CColor('Y','U'), new CColor('O','R')}, 'E');
+        cubes[0][1][1] = new Cube(new CColor[]{ new CColor('R','L')}, 'Q');
+        cubes[1][1][1] = new Cube(new CColor[]{ new CColor('Q','Q')}, 'Q');
+        cubes[2][1][1] = new Cube(new CColor[]{ new CColor('O','R')}, 'Q');
+        cubes[0][1][2] = new Cube(new CColor[]{ new CColor('R','L'), new CColor('W','D')}, 'E');
+        cubes[1][1][2] = new Cube(new CColor[]{ new CColor('W','D')}, 'Q');
+        cubes[2][1][2] = new Cube(new CColor[]{ new CColor('W','D'), new CColor('O','R')}, 'E');
+        cubes[0][2][0] = new Cube(new CColor[]{ new CColor('Y','U') , new CColor('R','L'), new CColor('B','B')}, 'C');
+        cubes[1][2][0] = new Cube(new CColor[]{ new CColor('Y','U') , new CColor('B','B')}, 'E');
+        cubes[2][2][0] = new Cube(new CColor[]{ new CColor('Y','U') , new CColor('B','B'), new CColor('O','R')}, 'C');
+        cubes[0][2][1] = new Cube(new CColor[]{ new CColor('R','L'), new CColor('B','B')}, 'E');
+        cubes[1][2][1] = new Cube(new CColor[]{ new CColor('B','B')}, 'Q');
+        cubes[2][2][1] = new Cube(new CColor[]{ new CColor('B','B'), new CColor('O','R')}, 'E');
+        cubes[0][2][2] = new Cube(new CColor[]{ new CColor('W','D') , new CColor('R','L'), new CColor('B','B')}, 'C');
+        cubes[1][2][2] = new Cube(new CColor[]{ new CColor('W','D') , new CColor('B','B')}, 'E');
+        cubes[2][2][2] = new Cube(new CColor[]{ new CColor('W','D') , new CColor('B','B'), new CColor('O','R')}, 'C');
     }
 }
