@@ -1,5 +1,6 @@
+package solver;
+
 import javax.swing.*;
-import javax.tools.Tool;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -70,7 +71,7 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
             ex.printStackTrace();
         }
 
-        cube = new CubeModel();
+        cube = new solver.CubeModel();
         
         cube.makeAlgorithm(scramble);
 

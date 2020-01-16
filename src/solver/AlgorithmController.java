@@ -1,3 +1,5 @@
+package solver;
+
 public class AlgorithmController {
 
     public String shortSideChanges(String alg) {

@@ -1,3 +1,5 @@
+package solver;
+
 public class Tools {
     private Cube [][][] cubes;
     private CubeModel model;

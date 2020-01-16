@@ -1,3 +1,5 @@
+package solver;
+
 public class CColor {
 
     private char direction;

@@ -1,3 +1,5 @@
+package solver;
+
 public class CubeModel {
 
     public Cube [][][] cubes = new Cube[3][3][3];
