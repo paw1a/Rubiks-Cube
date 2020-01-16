@@ -7,15 +7,20 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventType;
+import javafx.geometry.Orientation;
 import javafx.geometry.Point3D;
-import javafx.scene.Camera;
-import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
-import javafx.scene.Scene;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.DrawMode;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
@@ -42,9 +47,10 @@ public class Rendered3D extends Application {
     public void start(Stage primaryStage) {
 
         model = new CubeModel();
+        root = new SmartGroup();
         init3D();
 
-        showAlgorithm("R' U2 R' D' R U R' D R U' R' D' R U2 R' D R2");
+        //showAlgorithm("R' U2 R' D' R U R' D R U' R' D' R U2 R' D R2");
         //showAlgorithm("R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R");
         //showAlgorithm("B F F D' R R F D B' F D' U F' D' L L F D D U'");
         //showAlgorithm("F R U' R' U' R U R' F' R U R' U' R' F R F'");
@@ -54,9 +60,71 @@ public class Rendered3D extends Application {
         camera.setTranslateX(-500);
         camera.setTranslateY(-300);
 
-        Scene scene = new Scene(root, WIDTH, HEIGHT, true);
-        scene.setFill(Color.SILVER);
-        scene.setCamera(camera);
+        SubScene subScene = new SubScene(root, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
+        subScene.setFill(Color.SILVER);
+        subScene.setCamera(camera);
+
+        BorderPane pane = new BorderPane();
+        pane.setCenter(subScene);
+
+        Button button1 = new Button("R");
+        Button button2 = new Button("L");
+        Button button3 = new Button("F");
+        Button button4 = new Button("U");
+        Button button5 = new Button("D");
+        Button button6 = new Button("B");
+        Button enter = new Button("Enter");
+        Button reset = new Button("Reset");
+        TextArea area = new TextArea();
+        area.setMinSize(500, 20);
+        area.setMaxSize(500, 30);
+
+        Button button1r = new Button("R'");
+        Button button2r = new Button("L'");
+        Button button3r = new Button("F'");
+        Button button4r = new Button("U'");
+        Button button5r = new Button("D'");
+        Button button6r = new Button("B'");
+
+        ButtonBar bar1 = new ButtonBar();
+        bar1.getButtons().addAll(button1, button2, button3, button4, button5, button6);
+        ButtonBar bar2 = new ButtonBar();
+        bar2.getButtons().addAll(button1r, button2r, button3r, button4r, button5r, button6r);
+
+        for (int i = 0; i < bar1.getButtons().size(); i++) {
+            Button button = ((Button)bar1.getButtons().get(i));
+            button.setOnAction(event -> showAlgorithm(button.getText()));
+        }
+        for (int i = 0; i < bar2.getButtons().size(); i++) {
+            Button button = ((Button)bar2.getButtons().get(i));
+            button.setOnAction(event -> showAlgorithm(button.getText()));
+        }
+        enter.setOnAction(event -> showAlgorithm(area.getText()));
+        reset.setOnAction(event -> {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    for (int k = 0; k < 3; k++) {
+                        groups[i][j][k].getTransforms().clear();
+                    }
+                }
+            }
+            root.getChildren().clear();
+            init3D();
+        });
+
+        ToolBar toolBar1 = new ToolBar(bar1, area, enter, reset);
+        ToolBar toolBar2 = new ToolBar(bar2);
+
+        toolBar1.setMinHeight(60);
+        toolBar1.setMaxHeight(60);
+
+        toolBar1.setOrientation(Orientation.HORIZONTAL);
+        pane.setTop(toolBar1);
+        toolBar2.setOrientation(Orientation.HORIZONTAL);
+        pane.setBottom(toolBar2);
+
+
+        Scene scene = new Scene(pane);
 
         initMouseControl(root, scene);
 
@@ -64,12 +132,12 @@ public class Rendered3D extends Application {
             switch (event.getCode()) {
                 case W: root.setTranslateZ(root.getTranslateZ() + 100); break;
                 case S: root.setTranslateZ(root.getTranslateZ() - 100); break;
-                case R: showAlgorithm("R"); break;
+                /*case R: showAlgorithm("R"); break;
                 case L: showAlgorithm("L"); break;
                 case F: showAlgorithm("F"); break;
                 case B: showAlgorithm("B"); break;
                 case U: showAlgorithm("U"); break;
-                case D: showAlgorithm("D"); break;
+                case D: showAlgorithm("D"); break;*/
             }
         });
 
@@ -383,7 +451,6 @@ public class Rendered3D extends Application {
             }
         }
 
-        root = new SmartGroup();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {

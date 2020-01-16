@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="RubiksCube:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/RubiksCube_jar</output-path>
+  <artifact type="jar" name="Rubiks Cube:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Rubiks_Cube_jar</output-path>
     <root id="archive" name="Rubiks Cube.jar">
       <element id="module-output" name="Rubiks Cube" />
     </root>
