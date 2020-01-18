@@ -1,17 +1,24 @@
 package solver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CubeModel {
+
+    List<String> list;
 
     public Cube [][][] cubes = new Cube[3][3][3];
     public Tools tools;
 
     public CubeModel() {
         init();
+        list = new ArrayList<>();
         tools = new Tools(this);
     }
     
     public String makeAlgorithm(String s) {
         String [] moves = s.split(" ");
+        s = "";
         for (int i = 0; i < moves.length; i++) {
             s += makeMove(moves[i]);
         }
@@ -164,7 +171,7 @@ public class CubeModel {
             && cubes[1][2][0].getColorByDir('U') == 'Y' && cubes[0][1][0].getColorByDir('U') == 'Y')
             return moves;
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 4; i++) {
             if(cubes[0][1][0].getColorByDir('U') == 'Y' && cubes[2][1][0].getColorByDir('U') == 'Y') {
                 moves += makeAlgorithm("F R U R' U' F'");
                 return moves;
@@ -177,8 +184,7 @@ public class CubeModel {
                 return moves;
             } else moves += makeMove("U");
         }
-        moves += makeAlgorithm("F R U R' U' F' U2 F R U R' U' R U R' U' F'");
-        return moves;
+        return makeAlgorithm("F R U R' U' F' U2 F R U R' U' R U R' U' F'");
     }
 
     public String solveF2L() {
@@ -206,7 +212,7 @@ public class CubeModel {
                 moves += makeAlgorithm("U R U' R' U' F' U F");
                 restart = true;
             }
-            makeMove("y");
+            moves += makeMove("y");
         }
 
         if(restart) moves += solveF2L();
@@ -246,7 +252,6 @@ public class CubeModel {
                 if(!cubes[i][j][2].isWhite()) moves += solveWhiteCorners();
             }
         }
-
         return moves;
     }
 
@@ -365,11 +370,6 @@ public class CubeModel {
     }
 
     public String makeMove(String move) {
-        try {
-            Thread.sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         Cube [][] layer;
         if(move.contains("2")) {
             makeMove(String.valueOf(move.charAt(0)));

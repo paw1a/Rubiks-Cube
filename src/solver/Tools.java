@@ -225,14 +225,20 @@ public class Tools {
     public static String makeRandomScramble() {
         String scr = "";
         char [] moves = new char[] {'D', 'R', 'L', 'U', 'B', 'F'};
+        int prev = 'R';
         for (int i = 0; i < 25; i++) {
-            int move = (int) (Math.random()*5);
+            int move;
+            while (true) {
+                move = (int) (Math.random()*5);
+                if(move != prev) break;
+            }
+            prev = move;
             scr += moves[move];
-            int option = (int) (Math.random()*2);
+            int option = (int) (Math.random()*3);
             switch (option) {
                 case 0: scr += "2"; break;
                 case 1: scr += "'"; break;
-                case 3: break;
+                case 2: break;
             }
             scr += " ";
         }

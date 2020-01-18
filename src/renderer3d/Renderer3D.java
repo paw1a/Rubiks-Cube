@@ -25,9 +25,11 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import solver.AlgorithmController;
 import solver.CubeModel;
+import solver.Tools;
 
-public class Rendered3D extends Application {
+public class Renderer3D extends Application {
 
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
@@ -40,6 +42,7 @@ public class Rendered3D extends Application {
     private final DoubleProperty angleY = new SimpleDoubleProperty(0);
 
     private CubeModel model;
+    private AlgorithmController controller;
     private SmartGroup root;
     private SmartGroup [][][] groups;
 
@@ -48,13 +51,9 @@ public class Rendered3D extends Application {
 
         model = new CubeModel();
         root = new SmartGroup();
-        init3D();
+        controller = new AlgorithmController();
 
-        //showAlgorithm("R' U2 R' D' R U R' D R U' R' D' R U2 R' D R2");
-        //showAlgorithm("R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R");
-        //showAlgorithm("B F F D' R R F D B' F D' U F' D' L L F D D U'");
-        //showAlgorithm("F R U' R' U' R U R' F' R U R' U' R' F R F'");
-        //showAlgorithm("U' D R' U' R U D' R R U R' U R U' R U' R R");
+        init3D();
 
         Camera camera = new PerspectiveCamera();
         camera.setTranslateX(-500);
@@ -73,9 +72,10 @@ public class Rendered3D extends Application {
         Button button4 = new Button("U");
         Button button5 = new Button("D");
         Button button6 = new Button("B");
+        Button button7 = new Button("y");
         Button enter = new Button("Enter");
         Button reset = new Button("Reset");
-        TextArea area = new TextArea();
+        TextField area = new TextField();
         area.setMinSize(500, 20);
         area.setMaxSize(500, 30);
 
@@ -85,21 +85,35 @@ public class Rendered3D extends Application {
         Button button4r = new Button("U'");
         Button button5r = new Button("D'");
         Button button6r = new Button("B'");
+        Button button7r = new Button("y'");
+        Button solveButton = new Button("SOLVE");
+        Button scrambleButton = new Button("SCRAMBLE");
+        scrambleButton.setTranslateX(200);
+        solveButton.setTranslateX(200);
 
         ButtonBar bar1 = new ButtonBar();
-        bar1.getButtons().addAll(button1, button2, button3, button4, button5, button6);
+        bar1.getButtons().addAll(button1, button2, button3, button4, button5, button6, button7);
         ButtonBar bar2 = new ButtonBar();
-        bar2.getButtons().addAll(button1r, button2r, button3r, button4r, button5r, button6r);
+        bar2.getButtons().addAll(button1r, button2r, button3r, button4r, button5r, button6r, button7r);
 
         for (int i = 0; i < bar1.getButtons().size(); i++) {
             Button button = ((Button)bar1.getButtons().get(i));
-            button.setOnAction(event -> showAlgorithm(button.getText()));
+            button.setOnAction(event -> {
+                showAlgorithm(button.getText());
+                model.makeAlgorithm(button.getText());
+            });
         }
         for (int i = 0; i < bar2.getButtons().size(); i++) {
             Button button = ((Button)bar2.getButtons().get(i));
-            button.setOnAction(event -> showAlgorithm(button.getText()));
+            button.setOnAction(event -> {
+                showAlgorithm(button.getText());
+                model.makeAlgorithm(button.getText());
+            });
         }
-        enter.setOnAction(event -> showAlgorithm(area.getText()));
+        enter.setOnAction(event -> {
+            showAlgorithm(area.getText());
+            model.makeAlgorithm(area.getText());
+        });
         reset.setOnAction(event -> {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
@@ -108,12 +122,30 @@ public class Rendered3D extends Application {
                     }
                 }
             }
+            model = new CubeModel();
             root.getChildren().clear();
             init3D();
         });
+        scrambleButton.setOnAction(event -> {
+            String scramble = Tools.makeRandomScramble();
+            System.out.println("Scramble: " + scramble);
+            model.makeAlgorithm(scramble);
+            showAlgorithm(scramble);
+        });
+        solveButton.setOnAction(event -> {
+            String[] solve = solveCube();
+            String s = "";
+            for (int i = 0; i < solve.length; i++) {
+                System.out.println(i+1 + ") " + controller.shortAlgorithm(controller.shortAlgorithm(solve[i])));
+                s += controller.shortAlgorithm(controller.shortAlgorithm(solve[i]));
+            }
+            System.out.println("Moves count = "+s.split(" ").length);
+            System.out.println();
+            showAlgorithm(s);
+        });
 
         ToolBar toolBar1 = new ToolBar(bar1, area, enter, reset);
-        ToolBar toolBar2 = new ToolBar(bar2);
+        ToolBar toolBar2 = new ToolBar(bar2, scrambleButton, solveButton);
 
         toolBar1.setMinHeight(60);
         toolBar1.setMaxHeight(60);
@@ -123,7 +155,6 @@ public class Rendered3D extends Application {
         toolBar2.setOrientation(Orientation.HORIZONTAL);
         pane.setBottom(toolBar2);
 
-
         Scene scene = new Scene(pane);
 
         initMouseControl(root, scene);
@@ -132,12 +163,6 @@ public class Rendered3D extends Application {
             switch (event.getCode()) {
                 case W: root.setTranslateZ(root.getTranslateZ() + 100); break;
                 case S: root.setTranslateZ(root.getTranslateZ() - 100); break;
-                /*case R: showAlgorithm("R"); break;
-                case L: showAlgorithm("L"); break;
-                case F: showAlgorithm("F"); break;
-                case B: showAlgorithm("B"); break;
-                case U: showAlgorithm("U"); break;
-                case D: showAlgorithm("D"); break;*/
             }
         });
 
@@ -146,10 +171,31 @@ public class Rendered3D extends Application {
         primaryStage.show();
     }
 
+    public String[] solveCube() {
+        String[] s = new String[8];
+
+        s[0] = model.solveWhiteCross();
+        s[1] = model.prepareWhiteCorners();
+        s[2] = model.solveWhiteCorners();
+        s[3] = model.solveF2L();
+        s[4] = model.solveYellowCross();
+        s[5] = model.solveOLL();
+        s[6] = model.solvePLLCorners();
+        s[7] = model.solvePLLEdges();
+
+        return s;
+    }
+
     private void showAlgorithm(String alg) {
         String [] moves = alg.split(" ");
         SequentialTransition transition = new SequentialTransition();
         for (int i = 0; i < moves.length; i++) {
+            if(moves[i].contains("y")) {
+                if(moves[i].contains("'")) {showMove("U'");showMove("D");showMove("S'");}
+                else if(moves[i].contains("2")) {showMove("U");showMove("U");showMove("D");showMove("D");showMove("S");showMove("S");}
+                else {showMove("U");showMove("D'");showMove("S");}
+                continue;
+            }
             if(moves[i].contains("2")) {
                 transition.getChildren().addAll(showMove(moves[i].charAt(0)+""));
                 transition.getChildren().addAll(showMove(moves[i].charAt(0)+""));
@@ -168,7 +214,7 @@ public class Rendered3D extends Application {
         Point3D point3D = null;
         if(move.contains("R") || move.contains("L")) point3D = Rotate.X_AXIS;
         else if(move.contains("F") || move.contains("B")) point3D = Rotate.Z_AXIS;
-        else if(move.contains("U") || move.contains("D")) point3D = Rotate.Y_AXIS;
+        else if(move.contains("U") || move.contains("D") || move.contains("S")) point3D = Rotate.Y_AXIS;
 
         SmartGroup[][] side = getSide(move.charAt(0));
         SmartGroup[][] rotated = rotate(side, !move.contains("'"));
@@ -182,7 +228,7 @@ public class Rendered3D extends Application {
         Timeline timeline = new Timeline();
         timeline.getKeyFrames().addAll(
                 new KeyFrame(Duration.ZERO, new KeyValue(r.angleProperty(), 0)),
-                new KeyFrame(Duration.seconds(0.5), new KeyValue(r.angleProperty(), angle))
+                new KeyFrame(Duration.seconds(0.2), new KeyValue(r.angleProperty(), angle))
         );
         return timeline;
     }
@@ -239,6 +285,14 @@ public class Rendered3D extends Application {
                 }
                 break;
             }
+            case 'S': {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        side[i][j] = groups[j][1][2-i];
+                    }
+                }
+                break;
+            }
         }
 
         return side;
@@ -290,6 +344,14 @@ public class Rendered3D extends Application {
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
                         groups[2-j][i][2] = side[i][j];
+                    }
+                }
+                break;
+            }
+            case 'S': {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        groups[j][1][2-i] = side[i][j];
                     }
                 }
                 break;

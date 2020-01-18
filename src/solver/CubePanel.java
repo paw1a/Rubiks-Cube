@@ -54,36 +54,28 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
 
         System.out.println("Scramble " + scramble);
         try {
-            Thread.sleep(4000);
+            Thread.sleep(1000);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 
         String[] solve = solveCube();
         for (int j = 0; j < 8; j++) {
-            System.out.println(solve[j]);
+            System.out.println(j+1 + ")" + solve[j]);
+            System.out.println(j+1 + ")" + controller.shortAlgorithm(solve[j]));
         }
         System.out.println("////////////////////////////");
 
-        /*try {
-            Thread.sleep(4000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+        Thread.sleep(1000);
 
-        cube = new solver.CubeModel();
-        
+        cube = new CubeModel();
         cube.makeAlgorithm(scramble);
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+        Thread.sleep(1000);
 
-        for (int j = 0; j < 2; j++) {
-            cube.makeAlgorithm(solve[j]);
-        }*/
+        for (int j = 0; j < 8; j++) {
+            cube.makeAlgorithm(controller.shortAlgorithm(solve[j]));
+        }
     }
 
     public String[] solveCube() {
@@ -99,11 +91,6 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
         s[7] = cube.solvePLLEdges();
 
         return s;
-    }
-
-
-    public void update() {
-
     }
 
     public void draw() {
@@ -163,7 +150,6 @@ public class CubePanel extends JPanel implements Runnable, KeyListener {
 
             startTime = System.nanoTime();
             //System.out.println("Before update "+System.currentTimeMillis());
-            update();
             //System.out.println("After update "+System.currentTimeMillis());
             draw();
             //System.out.println("After draw "+System.currentTimeMillis());
