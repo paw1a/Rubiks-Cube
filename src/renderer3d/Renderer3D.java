@@ -56,10 +56,10 @@ public class Renderer3D extends Application {
         init3D();
 
         Camera camera = new PerspectiveCamera();
-        camera.setTranslateX(-500);
+        camera.setTranslateX(-300);
         camera.setTranslateY(-300);
 
-        SubScene subScene = new SubScene(root, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
+        SubScene subScene = new SubScene(root, WIDTH-300, HEIGHT, true, SceneAntialiasing.BALANCED);
         subScene.setFill(Color.SILVER);
         subScene.setCamera(camera);
 
@@ -90,6 +90,11 @@ public class Renderer3D extends Application {
         Button scrambleButton = new Button("SCRAMBLE");
         scrambleButton.setTranslateX(200);
         solveButton.setTranslateX(200);
+
+        TextArea label = new TextArea();
+        label.setMinSize(490, HEIGHT-10);
+        label.setMaxSize(490, HEIGHT-10);
+        label.setWrapText(true);
 
         ButtonBar bar1 = new ButtonBar();
         bar1.getButtons().addAll(button1, button2, button3, button4, button5, button6, button7);
@@ -138,14 +143,25 @@ public class Renderer3D extends Application {
             for (int i = 0; i < solve.length; i++) {
                 System.out.println(i+1 + ") " + controller.shortAlgorithm(controller.shortAlgorithm(solve[i])));
                 s += controller.shortAlgorithm(controller.shortAlgorithm(solve[i]));
+                solve[i] = controller.shortAlgorithm(controller.shortAlgorithm(solve[i]));
             }
             System.out.println("Moves count = "+s.split(" ").length);
             System.out.println();
             showAlgorithm(s);
+
+            String text = "";
+            for (int i = 0; i < solve.length; i++) {
+                text += i+1+") " + solve[i] + "\n \n";
+            }
+            text += "Moves = " + s.split(" ").length;
+            label.setText(text);
         });
 
         ToolBar toolBar1 = new ToolBar(bar1, area, enter, reset);
         ToolBar toolBar2 = new ToolBar(bar2, scrambleButton, solveButton);
+        ToolBar toolBar3 = new ToolBar(label);
+        toolBar3.setMinSize(500, HEIGHT);
+        toolBar3.setMaxSize(500, HEIGHT);
 
         toolBar1.setMinHeight(60);
         toolBar1.setMaxHeight(60);
@@ -154,6 +170,8 @@ public class Renderer3D extends Application {
         pane.setTop(toolBar1);
         toolBar2.setOrientation(Orientation.HORIZONTAL);
         pane.setBottom(toolBar2);
+        toolBar3.setOrientation(Orientation.VERTICAL);
+        pane.setRight(toolBar3);
 
         Scene scene = new Scene(pane);
 
